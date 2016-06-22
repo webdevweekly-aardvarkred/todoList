@@ -14,5 +14,8 @@
   "bugs": {
     "url": "https://github.com/webdevweekly-aardvarkred/todoList/issues"
   },
-  "homepage": "https://github.com/webdevweekly-aardvarkred/todoList#readme"
+  "homepage": "https://github.com/webdevweekly-aardvarkred/todoList#readme",
+  "devDependencies": {
+    "standard": "^7.1.2"
+  }
 }
