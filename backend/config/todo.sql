@@ -3,6 +3,6 @@ CREATE TABLE IF NOT EXISTS todos (
   task TEXT,
   completed BOOLEAN,
   importance TEXT,
-  created_at TIMESTAMPTZ,
-  updated_at TIMESTAMPTZ
+  created_at TIMESTAMP,
+  updated_at TIMESTAMP
 );
