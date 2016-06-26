@@ -5,7 +5,7 @@ const router = express.Router()
 router.get('/', (req, res) => {
   Todo
     .forge()
-    .fetch()
+    .fetchAll()
     .then(collection => {
       res.json({error: false, data: collection})
     })
@@ -31,11 +31,11 @@ router.get('/:id', (req, res) => {
 })
 
 router.post('/', (req, res) => {
-  if (['highly', 'moderately', 'low'].indexOf(req.body.todo.importance) === -1) {
+  if (['highly', 'moderately', 'low'].indexOf(req.body.importance) === -1) {
     res.json({error: true, data: {message: 'Importance level can only be highly, moderately, or low.'}})
   } else {
     Todo
-      .forge(req.body.todo)
+      .forge(req.body)
       .save()
       .then(todo => {
         res.json({error: false, data: todo})
@@ -47,27 +47,27 @@ router.post('/', (req, res) => {
 })
 
 router.put('/:id', (req, res) => {
-  if (req.body.todo.importance && ['highly', 'moderately', 'low'].indexOf(req.body.todo.importance) === -1) {
+  if (req.body.importance && ['highly', 'moderately', 'low'].indexOf(req.body.importance) === -1) {
     res.json({error: true, data: {message: 'Importance level can only be highly, moderately, or low.'}})
   } else {
-    var newTodo = req.body.todo
+    var newTodo = req.body
     Todo
       .forge({id: req.params.id})
       .fetch()
       .then(todo => {
-        todo
-          .save({
-            task: newTodo.task || todo.task,
-            completed: newTodo.completed || todo.completed,
-            importance: newTodo.importance || todo.importance
-          })
-          .then(todo => {
-            res.json({error: false, data: {message: 'Todo has been updated.'}})
-          })
-          .catch(err => {
-            console.log(err)
-            res.status(500).json({error: true, data: {message: err.message}})
-          })
+        if (!todo) {
+          res.status(404).json({error: true, message: 'Todo not found.'})
+        } else {
+          return todo
+            .save({
+              task: newTodo.task || todo.task,
+              completed: newTodo.completed || todo.completed,
+              importance: newTodo.importance || todo.importance
+            })
+            .then(todo => {
+              res.json({error: false, data: {message: 'Todo has been updated.'}})
+            })
+        }
       })
       .catch(err => {
         res.status(500).json({error: true, data: {message: err.message}})
@@ -80,14 +80,15 @@ router.delete('/:id', (req, res) => {
     .forge({id: req.params.id})
     .fetch()
     .then(todo => {
-      todo
-        .destroy()
-        .then(() => {
-          res.json({error: false, data: {message: 'Todo has been successfully eradicated.'}})
-        })
-        .catch(err => {
-          res.status(500).json({error: true, data: {message: err.message}})
-        })
+      if (!todo) {
+        res.status(404).json({error: true, message: 'Todo not found.'})
+      } else {
+        return todo
+          .destroy()
+          .then(() => {
+            res.json({error: false, data: {message: 'Todo has been successfully eradicated.'}})
+          })
+      }
     })
     .catch(err => {
       res.status(500).json({error: true, data: {message: err.message}})
