@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react'
 import Todo from './Todo'
 
 const Todos = ({ todos, ATTEMPT_DELETE: deleteTodo }) => {
-  console.log(todos)
   return (
     <ul className='todos'>
       {todos.map((todo, i) => {
