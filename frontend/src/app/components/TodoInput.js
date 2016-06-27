@@ -15,7 +15,8 @@ class TodoInput extends Component {
 
     if (todo) {
       addTodo({
-        text: todo,
+        task: todo,
+        importance: 'low',
         completed: false
       }).then(() => {
         input.value = ''
