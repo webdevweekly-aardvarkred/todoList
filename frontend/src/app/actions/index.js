@@ -1,19 +1,27 @@
-let id = 0
+import axios from 'axios'
 
-export const ADD_TODO = (payload) => ({
+function addTodo (payload) {
+  return axios.post('/api/todos', payload)
+}
+
+export const ADD_TODO = ({ id, task, completed, importance }) => ({
   type: 'ADD_TODO',
-  id: id++,
-  text: payload.text,
-  completed: payload.completed
+  id,
+  task,
+  completed,
+  importance
 })
 
 export const ATTEMPT_ADD = (payload) => {
   return function (dispatch) {
-    return fakeApiCall(payload)
-      .then(payload => {
-        dispatch(ADD_TODO(payload))
+    return addTodo(payload)
+      .then(response => {
+        if (response.status === 200) {
+          return dispatch(ADD_TODO(payload))
+        }
+      })
+      .catch(err => {
+        console.log(err)
       })
   }
 }
-
-const fakeApiCall = (payload) => Promise.resolve(payload)
