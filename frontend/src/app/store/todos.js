@@ -3,9 +3,12 @@ export default (state = [], action) => {
     case 'ADD_TODO':
       return [...state, {
         id: action.id,
-        text: action.text,
+        task: action.task,
+        importance: action.importance,
         completed: action.completed
       }]
+    case 'DELETE_TODO':
+      return state.filter(todo => todo.id !== action.id)
     default:
       return state
   }
