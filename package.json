@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "standard",
     "test": "npm run lint",
-    "dev": "nodemon --ignore frontend/src/app devserver.js",
+    "dev": "node devserver.js & nodemon ./backend/index.js",
     "start": "node ./backend/index.js"
   },
   "repository": {
