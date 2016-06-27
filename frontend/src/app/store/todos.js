@@ -1,6 +1,6 @@
-function toggleTodo (todo, action) {
+function toggleTodo (todo) {
   return Object.assign({}, todo, {
-    completed: action.completed
+    completed: !todo.completed
   })
 }
 
@@ -17,7 +17,7 @@ export default (state = [], action) => {
       return state.filter(todo => todo.id !== action.id)
     case 'TOGGLE_TODO':
       return state.map(todo => {
-        return todo.id === action.id ? toggleTodo(todo, action) : todo
+        return todo.id === action.id ? toggleTodo(todo) : todo
       })
     default:
       return state

@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import Todos from '../components/Todos'
-import { ATTEMPT_DELETE } from '../actions'
+import { ATTEMPT_DELETE, ATTEMPT_TOGGLE } from '../actions'
 
 const mapStateToProps = ({ todos }) => ({
   todos
@@ -8,5 +8,5 @@ const mapStateToProps = ({ todos }) => ({
 
 export default connect(
   mapStateToProps,
-  { ATTEMPT_DELETE }
+  { ATTEMPT_DELETE, ATTEMPT_TOGGLE }
 )(Todos)
