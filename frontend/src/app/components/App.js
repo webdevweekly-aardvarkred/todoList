@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import TodoInputContainer from '../containers/TodoInputContainer'
+import Todos from '../containers/TodosContainer'
 
 /* this is our root component */
 
@@ -6,7 +8,8 @@ class App extends Component {
   render () {
     return (
       <div class='container'>
-        <h1>Todo List App!</h1>
+        <TodoInputContainer />
+        <Todos todos={this.props.todos} />
       </div>
     )
   }
