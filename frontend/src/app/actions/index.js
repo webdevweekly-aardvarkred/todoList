@@ -25,10 +25,9 @@ export const DELETE_TODO = (id) => ({
   id
 })
 
-export const TOGGLE_TODO = ({ id, completed }) => ({
+export const TOGGLE_TODO = (id) => ({
   type: 'TOGGLE_TODO',
-  id,
-  completed
+  id
 })
 
 export const ATTEMPT_ADD = (payload) => {
@@ -40,35 +39,28 @@ export const ATTEMPT_ADD = (payload) => {
         }
       })
       .catch(err => {
-        console.log(err)
+        console.log(err, err.stack)
       })
   }
 }
 
 export const ATTEMPT_DELETE = (id) => {
   return function (dispatch) {
+    dispatch(DELETE_TODO(id))
     return deleteTodo(id)
-      .then(response => {
-        if (response.status === 200) {
-          return dispatch(DELETE_TODO(id))
-        }
-      })
       .catch(err => {
-        console.log(err)
+        console.log(err, err.stack)
       })
   }
 }
 
 export const ATTEMPT_TOGGLE = (id, payload) => {
   return function (dispatch) {
+    dispatch(TOGGLE_TODO(id))
     return toggleTodo(id, payload)
-      .then(response => {
-        if (response.status === 200) {
-          return dispatch(TOGGLE_TODO(id))
-        }
-      })
       .catch(err => {
-        console.log(err)
+        console.log(err, err.stack)
+        dispatch(TOGGLE_TODO(id))
       })
   }
 }
