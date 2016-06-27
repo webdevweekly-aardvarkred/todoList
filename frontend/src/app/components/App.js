@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import TodoInputContainer from '../containers/TodoInputContainer'
-import Todos from './Todos'
+import Todos from '../containers/TodosContainer'
 
 /* this is our root component */
 
