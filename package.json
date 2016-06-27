@@ -6,7 +6,8 @@
   "scripts": {
     "lint": "standard",
     "test": "npm run lint",
-    "dev": "nodemon --ignore frontend/src/app devserver.js"
+    "dev": "nodemon --ignore frontend/src/app devserver.js",
+    "start": "node ./backend/index.js"
   },
   "repository": {
     "type": "git",
@@ -30,6 +31,12 @@
     "webpack-dev-server": "^1.14.1"
   },
   "dependencies": {
+    "body-parser": "^1.15.2",
+    "bookshelf": "^0.9.5",
+    "express": "^4.14.0",
+    "method-override": "^2.3.6",
+    "morgan": "^1.7.0",
+    "pg": "^6.0.1",
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
     "react-redux": "^4.4.5",
