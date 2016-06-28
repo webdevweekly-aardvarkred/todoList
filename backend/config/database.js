@@ -1,6 +1,7 @@
+const db = require('./main.js').database
 var knex = require('knex')({
   client: 'pg',
-  connection: process.env.POSTGRESQL,
+  connection: db,
   searchPath: 'knex,public'
 })
 

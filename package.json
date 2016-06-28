@@ -39,6 +39,7 @@
     "jsonwebtoken": "^7.0.1",
     "method-override": "^2.3.6",
     "morgan": "^1.7.0",
+    "passport": "^0.3.2",
     "passport-jwt": "^2.1.0",
     "pg": "^6.0.1",
     "react": "^15.1.0",
