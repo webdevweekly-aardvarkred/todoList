@@ -17,7 +17,6 @@ var User = database.Model.extend({
     })
   },
   comparePassword: function (password, callback) {
-    console.log(this.attributes.password, password)
     bcrypt.compare(password, this.attributes.password, function (err, isMatch) {
       if (err) {
         return callback(err)

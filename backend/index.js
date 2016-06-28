@@ -22,7 +22,7 @@ db.createTables()
     app.use(morgan('dev'))
     app.use(passport.initialize())
     passportStrategy(passport)
-    app.use('/api/todos', todoRoutes)
+    app.use('/api/todos', passport.authenticate('jwt', {session: false}), todoRoutes)
     app.use('/api/users', userRoutes)
 
     app.listen(process.env.PORT || 8080, process.env.IP, function () {

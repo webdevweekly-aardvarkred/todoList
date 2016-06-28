@@ -1,9 +1,8 @@
 const Todo = require('../models/todo')
 const express = require('express')
 const router = express.Router()
-// const passport = require('passport')
 
-router.get('/', (req, res) => { // passport.authenticate('jwt', { session: false }) is currently not authenticating jwt given
+router.get('/', (req, res) => {
   Todo
     .forge()
     .fetchAll()
