@@ -8,13 +8,22 @@ var knex = require('knex')({
  * but for one table this should suffice */
 
 function createTables () {
-  return knex.schema.createTableIfNotExists('todos', function (t) {
-    t.increments('id').primary()
-    t.string('task')
-    t.boolean('completed')
-    t.string('importance')
-    t.timestamps(null, true)
-  })
+  return Promise.all(
+    [ knex.schema.createTableIfNotExists('todos', function (t) {
+      t.increments('id').primary()
+      t.string('task')
+      t.boolean('completed')
+      t.string('importance')
+      t.integer('user_id')
+      t.timestamps(null, true)
+    }),
+    knex.schema.createTableIfNotExists('users', function (t) {
+      t.increments('id').primary()
+      t.string('username')
+      t.string('password')
+      t.enum('role', ['user', 'admin'])
+    })
+  ])
 }
 
 exports.createTables = createTables
