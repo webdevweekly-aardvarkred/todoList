@@ -28,4 +28,3 @@ db.createTables()
   .catch(err => {
     console.error(err.stack)
   })
-
