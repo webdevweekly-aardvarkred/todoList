@@ -8,7 +8,7 @@ function deleteTodo (id) {
   return axios.delete(`/api/todos/${id}`)
 }
 
-function toggleTodo (id, payload) {
+function updateTodo (id, payload) {
   return axios.put(`/api/todos/${id}`, payload)
 }
 
@@ -18,6 +18,12 @@ export const ADD_TODO = ({ id, task, completed, importance }) => ({
   task,
   completed,
   importance
+})
+
+export const SELECT_IMPORTANCE = (id, payload) => ({
+  type: 'SELECT_IMPORTANCE',
+  id,
+  importance: payload.importance
 })
 
 export const DELETE_TODO = (id) => ({
@@ -54,13 +60,22 @@ export const ATTEMPT_DELETE = (id) => {
   }
 }
 
+export const ATTEMPT_SELECT_IMPORTANCE = (id, payload) => {
+  return function (dispatch) {
+    dispatch(SELECT_IMPORTANCE(id, payload))
+    return updateTodo(id, payload)
+      .catch(err => {
+        console.log(err, err.stack)
+      })
+  }
+}
+
 export const ATTEMPT_TOGGLE = (id, payload) => {
   return function (dispatch) {
     dispatch(TOGGLE_TODO(id))
-    return toggleTodo(id, payload)
+    return updateTodo(id, payload)
       .catch(err => {
         console.log(err, err.stack)
-        dispatch(TOGGLE_TODO(id))
       })
   }
 }
