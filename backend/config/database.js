@@ -1,10 +1,7 @@
 var knex = require('knex')({
   client: 'pg',
   connection: process.env.POSTGRESQL,
-  searchPath: 'knex,public',
-  pool: {min: 1, max: 7},
-  database: 'todos',
-  charset: 'utf8'
+  searchPath: 'knex,public'
 })
 
 /* this is where we create our tables, you can move this to a different file
