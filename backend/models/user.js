@@ -1,5 +1,6 @@
 const database = require('../config/database').bookshelf
 const bcrypt = require('bcrypt')
+const Todos = require('./todo')
 
 var User = database.Model.extend({
   tableName: 'users',
@@ -23,6 +24,9 @@ var User = database.Model.extend({
       }
       callback(null, isMatch)
     })
+  },
+  todos: function () {
+    return this.hasMany(Todos)
   }
 })
 

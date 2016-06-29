@@ -1,12 +1,17 @@
 const Todo = require('../models/todo')
+const User = require('../models/user')
 const express = require('express')
 const router = express.Router()
 
 router.get('/', (req, res) => {
+  if (!req.user) {
+    res.status(403).json({error: true, date: {message: 'No user found. Please log in.'}})
+  }
   Todo
-    .forge()
+    .query('where', 'user_id', '=', req.user.attributes.id)
     .fetchAll()
     .then(collection => {
+      collection
       res.json({error: false, data: collection})
     })
     .catch(err => {
@@ -34,10 +39,14 @@ router.post('/', (req, res) => {
   if (['highly', 'moderately', 'low'].indexOf(req.body.importance) === -1) {
     res.json({error: true, data: {message: 'Importance level can only be highly, moderately, or low.'}})
   } else {
+    var todoTemp = req.body
+    todoTemp.user_id = req.user.attributes.id
     Todo
-      .forge(req.body)
+      .forge(todoTemp)
       .save()
       .then(todo => {
+        console.log(todo)
+        User.forge({id: todoTemp.user_id}).fetch().then(u => console.log(u.todos))
         res.json({error: false, data: todo})
       })
       .catch(err => {
