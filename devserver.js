@@ -7,6 +7,7 @@ new WebpackDevServer(webpack(config), {
   contentBase: path.join(__dirname, 'dist'),
   publicPath: config.output.publicPath,
   hot: true,
+  compress: true,
   historyApiFallback: true,
   proxy: {
     '/api/*': {

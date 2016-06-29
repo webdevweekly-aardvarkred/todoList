@@ -8,11 +8,12 @@ function selectImportance (todo, importance) {
   return Object.assign({}, todo, {
     importance
   })
-
 }
 
 export default (state = [], action) => {
   switch (action.type) {
+    case 'INIT':
+      return action.todos
     case 'ADD_TODO':
       return [...state, {
         id: action.id,

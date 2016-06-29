@@ -17,7 +17,8 @@ module.exports = {
     publicPath: '/assets/js/'
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.optimize.UglifyJsPlugin()
   ],
   module: {
     loaders: [{
@@ -25,6 +26,11 @@ module.exports = {
       loaders: ['react-hot', 'babel'],
       include: path.join(__dirname, 'frontend', 'src')
     }]
+  },
+  node: {
+    net: 'empty',
+    tls: 'empty',
+    dns: 'empty'
   },
   port: port,
   host: host
