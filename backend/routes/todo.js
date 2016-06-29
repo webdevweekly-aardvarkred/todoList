@@ -1,5 +1,4 @@
 const Todo = require('../models/todo')
-const User = require('../models/user')
 const express = require('express')
 const router = express.Router()
 
@@ -11,8 +10,15 @@ router.get('/', (req, res) => {
     .query('where', 'user_id', '=', req.user.attributes.id)
     .fetchAll()
     .then(collection => {
-      collection
-      res.json({error: false, data: collection})
+      var temp = collection.map(element => {
+        var obj = {}
+        obj.id = element.id
+        obj.task = element.attributes.task
+        obj.completed = element.attributes.completed
+        obj.importance = element.attributes.importance
+        return obj
+      })
+      res.json({error: false, data: temp})
     })
     .catch(err => {
       res.status(500).json({error: true, data: {message: err.message}})
@@ -45,8 +51,6 @@ router.post('/', (req, res) => {
       .forge(todoTemp)
       .save()
       .then(todo => {
-        console.log(todo)
-        User.forge({id: todoTemp.user_id}).fetch().then(u => console.log(u.todos))
         res.json({error: false, data: todo})
       })
       .catch(err => {
