@@ -1,6 +1,12 @@
 import React, { PropTypes } from 'react'
 import Todo from './Todo'
 
+const order = {
+  'low': 0,
+  'moderately': 1,
+  'highly': 2
+}
+
 const Todos = (
   {
     todos,
@@ -11,7 +17,16 @@ const Todos = (
 ) => {
   return (
     <ul className='todos'>
-      {todos.map((todo, i) => {
+      {todos.sort((a, b) => {
+        if (order[a.importance] > order[b.importance]) {
+          return -1
+        }
+        if (order[a.importance] === order[b.importance]) {
+          return 0
+        }
+
+        return 1
+      }).map((todo, i) => {
         return (
           <Todo key={i}
             {...todo}
@@ -19,7 +34,7 @@ const Todos = (
             toggleTodo={toggleTodo}
             selectImportance={selectImportance}
           />
-        )
+          )
       })}
     </ul>
   )

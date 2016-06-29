@@ -2,6 +2,7 @@ const User = require('../models/user')
 const express = require('express')
 const router = express.Router()
 const jwt = require('jsonwebtoken')
+const passport = require('passport')
 const config = require('../config/main')
 
 function createToken (user) {
@@ -14,16 +15,20 @@ function createToken (user) {
   return Promise.resolve(jwt.sign(profile, config.secret, { expiresIn: (60 * 60) }))
 }
 
-router.post('/register', (req, res) => {
+router.get('/', passport.authenticate('jwt', { session: false }), (req, res, next) => {
+  res.send('authenticated')
+})
+
+router.post('/register', (req, res, next) => {
   if (!req.body) {
-    res.json({error: true, data: {message: 'Error no data'}})
+    res.status(400).json({ error: true, message: 'Error no data' })
   } else {
     User
       .forge({username: req.body.username})
       .fetch()
       .then(user => {
         if (user) {
-          res.json({error: true, data: {message: 'Username already exists.'}})
+          res.status(400).json({ error: true, message: 'Username already exists.' })
         } else {
           return User
             .forge(req.body)
@@ -32,40 +37,38 @@ router.post('/register', (req, res) => {
               return createToken(user.toJSON())
             })
             .then(token => {
-              res.json({error: false, data: { token: token }})
+              res.json({ error: false, token: token })
             })
         }
       })
       .catch(err => {
-        console.log(err, err.stack)
-        res.status(500).send('An Error Occurrred')
+        next(err)
       })
   }
 })
 
-router.post('/authenticate', (req, res) => {
+router.post('/authenticate', (req, res, next) => {
   User
     .forge({username: req.body.username})
     .fetch()
     .then(user => {
       if (!user) {
-        res.status(404).json({error: true, data: {message: 'User not found.'}})
+        res.status(404).json({ error: true, message: 'User not found.' })
       } else {
         user.comparePassword(req.body.password, function (err, isMatch) {
           if (isMatch && !err) {
             createToken(user.toJSON())
               .then(token => {
-                res.json({error: false, data: { token: token }})
+                res.json({ error: false, token: token })
               })
           } else {
-            res.json({error: true, data: {message: 'Authentication failed. Password invalid.'}})
+            res.status(401).json({ error: true, message: 'Authentication failed. Password invalid.' })
           }
         })
       }
     })
     .catch(err => {
-      console.log(err, err.stack)
-      res.status(500).send('An Error Occured')
+      next(err)
     })
 })
 

@@ -1,15 +1,25 @@
 import React, { Component } from 'react'
-import TodoInputContainer from '../containers/TodoInputContainer'
-import Todos from '../containers/TodosContainer'
+import { Link } from 'react-router'
 
 /* this is our root component */
 
 class App extends Component {
   render () {
     return (
-      <div class='container'>
-        <TodoInputContainer />
-        <Todos todos={this.props.todos} />
+      <div className='app-container'>
+        <header>
+          <nav>
+            <ul>
+              <li>
+                <Link to='/'>home</Link>
+              </li>
+              <li>
+                <Link to='/login'>login</Link>
+              </li>
+            </ul>
+          </nav>
+        </header>
+        {this.props.children}
       </div>
     )
   }
