@@ -36,6 +36,8 @@
     "body-parser": "^1.15.2",
     "bookshelf": "^0.9.5",
     "express": "^4.14.0",
+    "joi": "^8.4.2",
+    "joi-validation-strategy": "^0.3.3",
     "jsonwebtoken": "^7.0.1",
     "method-override": "^2.3.6",
     "morgan": "^1.7.0",
@@ -45,6 +47,8 @@
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
     "react-redux": "^4.4.5",
+    "react-router": "^2.5.1",
+    "react-validation-mixin": "^5.4.0",
     "redux": "^3.5.2",
     "redux-thunk": "^2.1.0",
     "xss": "^0.2.13"
