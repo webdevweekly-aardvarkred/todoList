@@ -12,6 +12,11 @@ const db = require('./config/database')
 /* importing database to createTable if it doesn't exist
  * start our application after database tables have been created */
 
+function internalErrors (err, req, res, next) {
+  console.error(err.stack)
+  res.status(500).send({ error: 'Internal Server Error' })
+}
+
 db.createTables()
   .then(() => {
     console.log('tables have been created')
@@ -24,6 +29,7 @@ db.createTables()
     passportStrategy(passport)
     app.use('/api/todos', passport.authenticate('jwt', {session: false}), todoRoutes)
     app.use('/api/users', userRoutes)
+    app.use(internalErrors)
 
     app.listen(process.env.PORT || 8080, process.env.IP, function () {
       console.log('ToDo api server has started.')

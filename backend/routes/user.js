@@ -2,6 +2,7 @@ const User = require('../models/user')
 const express = require('express')
 const router = express.Router()
 const jwt = require('jsonwebtoken')
+const passport = require('passport')
 const config = require('../config/main')
 
 function createToken (user) {
@@ -14,7 +15,7 @@ function createToken (user) {
   return Promise.resolve(jwt.sign(profile, config.secret, { expiresIn: (60 * 60) }))
 }
 
-router.get('/', (req, res, next) => {
+router.get('/', passport.authenticate('jwt', { session: false }), (req, res, next) => {
   res.send('authenticated')
 })
 
