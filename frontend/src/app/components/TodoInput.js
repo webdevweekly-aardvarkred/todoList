@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { withRouter } from 'react-router'
 import xss from 'xss'
 
 class TodoInput extends Component {
@@ -20,6 +21,11 @@ class TodoInput extends Component {
         completed: false
       }).then(() => {
         input.value = ''
+      }).catch((err) => {
+        const status = err.status
+        if (status >= 400 && status <= 500) {
+          this.props.router.replace('/login')
+        }
       })
     }
   }
@@ -36,4 +42,4 @@ class TodoInput extends Component {
   }
 }
 
-export default TodoInput
+export default withRouter(TodoInput)
