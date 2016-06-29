@@ -32,6 +32,8 @@ router.get('/:id', (req, res) => {
     .then(todo => {
       if (!todo) {
         res.status(404).json({error: true, message: 'Todo not found.'})
+      } else if (todo.user_id !== req.user.attributes.id) {
+        res.json({error: false, data: {message: 'This is not your todo.'}})
       } else {
         res.json({error: false, data: todo})
       }
@@ -68,7 +70,9 @@ router.put('/:id', (req, res) => {
       .fetch()
       .then(todo => {
         if (!todo) {
-          res.status(404).json({error: true, message: 'Todo not found.'})
+          res.status(404).json({error: true, data: {message: 'Todo not found.'}})
+        } else if (todo.user_id !== req.user.attributes.id) {
+          res.status(403).json({error: true, data: {message: 'You do not have access to this todo.'}})
         } else {
           return todo
             .save(Object.assign({}, todo.toJSON(), req.body))
@@ -89,7 +93,9 @@ router.delete('/:id', (req, res) => {
     .fetch()
     .then(todo => {
       if (!todo) {
-        res.status(404).json({error: true, message: 'Todo not found.'})
+        res.status(404).json({error: true, data: {message: 'Todo not found.'}})
+      } else if (todo.user_id !== req.user.attributes.id) {
+        res.status(403).json({error: true, data: {message: 'You do not have access to this todo'}})
       } else {
         return todo
           .destroy()
