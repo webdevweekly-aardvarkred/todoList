@@ -1,34 +1,50 @@
 import axios from 'axios'
 
-function addTodo (payload) {
-  return axios.post('/api/todos', payload, {
+const request = (options) => {
+  const opts = Object.assign({}, options, {
     headers: {
       authorization: `JWT ${window.localStorage.getItem('token')}`
     }
+  })
+
+  return axios(opts)
+}
+
+function addTodo (payload) {
+  return request({
+    method: 'post',
+    url: '/api/todos',
+    data: payload
   })
 }
 
 function deleteTodo (id) {
-  return axios.delete(`/api/todos/${id}`, {
-    headers: {
-      authorization: `JWT ${window.localStorage.getItem('token')}`
-    }
+  return request({
+    method: 'delete',
+    url: `/api/todos/${id}`
   })
 }
 
 function updateTodo (id, payload) {
-  return axios.put(`/api/todos/${id}`, payload, {
-    headers: {
-      authorization: `JWT ${window.localStorage.getItem('token')}`
-    }
+  return request({
+    method: 'put',
+    url: `/api/todos/${id}`,
+    data: payload
   })
 }
 
 function fetchTodos () {
-  return axios.get('/api/todos', {
-    headers: {
-      authorization: `JWT ${window.localStorage.getItem('token')}`
-    }
+  return request({
+    method: 'get',
+    url: '/api/todos'
+  })
+}
+
+function editTask (id, payload) {
+  return request({
+    method: 'put',
+    url: `/api/todos/${id}`,
+    data: payload
   })
 }
 
@@ -51,6 +67,12 @@ export const SELECT_IMPORTANCE = (id, payload) => ({
   importance: payload.importance
 })
 
+export const EDIT_TASK = (id, payload) => ({
+  type: 'EDIT_TASK',
+  id,
+  task: payload.task
+})
+
 export const DELETE_TODO = (id) => ({
   type: 'DELETE_TODO',
   id
@@ -60,6 +82,13 @@ export const TOGGLE_TODO = (id) => ({
   type: 'TOGGLE_TODO',
   id
 })
+
+export const ATTEMPT_EDIT_TASK = (id, payload) => {
+  return function (dispatch) {
+    dispatch(EDIT_TASK(id, payload))
+    return editTask(id, payload)
+  }
+}
 
 export const ATTEMPT_FETCH = () => {
   return function (dispatch) {
@@ -72,12 +101,8 @@ export const ATTEMPT_FETCH = () => {
 
 export const ATTEMPT_ADD = (payload) => {
   return function (dispatch) {
+    dispatch(ADD_TODO(payload))
     return addTodo(payload)
-      .then(response => {
-        if (response.status === 200) {
-          return dispatch(ADD_TODO(response.data))
-        }
-      })
   }
 }
 

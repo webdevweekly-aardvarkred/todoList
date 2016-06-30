@@ -18,7 +18,8 @@ const Todo = (
     deleteTodo,
     toggleTodo,
     selectImportance,
-    router
+    router,
+    editTask
   }
 ) => {
   return (
@@ -43,7 +44,14 @@ const Todo = (
         }}>delete</button>
       </div>
       <div className='todo-edit'>
-        <input type='text' defaultValue={task} />
+        <input type='text' defaultValue={task} onKeyUp={(e) => {
+          const key = e.which
+          if (key === 13) {
+            editTask(id, {
+              task: e.target.value
+            })
+          }
+        }} />
       </div>
       <div className='importance-input'>
         {['low', 'moderately', 'highly'].map((value, i) => (
@@ -67,7 +75,8 @@ Todo.propTypes = {
   deleteTodo: PropTypes.func,
   toggleTodo: PropTypes.func,
   selectImportane: PropTypes.func,
-  router: PropTypes.object
+  router: PropTypes.object,
+  editTask: PropTypes.func
 }
 
 export default withRouter(Todo)
