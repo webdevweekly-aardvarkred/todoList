@@ -22,8 +22,8 @@ const Todo = (
   }
 ) => {
   return (
-    <li className='todo-item' data-id={id} data-importance={importance}>
-      <div className='todo-item-container'>
+    <li className='todo-item-container' data-id={id} data-importance={importance}>
+      <div className='todo-item'>
         <input
           onChange={(e) => {
             toggleTodo(id, { completed: !completed })
@@ -41,6 +41,9 @@ const Todo = (
               unauth(err, router.replace)
             })
         }}>delete</button>
+      </div>
+      <div className='todo-edit'>
+        <input type='text' defaultValue={task} />
       </div>
       <div className='importance-input'>
         {['low', 'moderately', 'highly'].map((value, i) => (
