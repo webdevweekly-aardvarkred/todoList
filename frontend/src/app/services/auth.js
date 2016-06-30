@@ -16,6 +16,13 @@ class Auth {
       })
   }
 
+  register (credentials) {
+    return axios.post('/api/users/register', credentials)
+      .then((response) => {
+        window.localStorage.setItem('token', response.data.token)
+      })
+  }
+
 }
 
 export default new Auth()

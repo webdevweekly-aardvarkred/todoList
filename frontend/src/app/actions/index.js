@@ -101,8 +101,10 @@ export const ATTEMPT_FETCH = () => {
 
 export const ATTEMPT_ADD = (payload) => {
   return function (dispatch) {
-    dispatch(ADD_TODO(payload))
     return addTodo(payload)
+      .then(response => {
+        dispatch(ADD_TODO(response.data))
+      })
   }
 }
 
