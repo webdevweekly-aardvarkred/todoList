@@ -1,5 +1,4 @@
 const path = require('path')
-const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const precss = require('precss')
 const autoprefixer = require('autoprefixer')
@@ -8,10 +7,7 @@ const host = process.env.HOST || 'localhost'
 const port = process.env.PORT || 3000
 
 module.exports = {
-  devtool: 'eval',
   entry: [
-    `webpack-dev-server/client?http://${host}:${port}`,
-    'webpack/hot/only-dev-server',
     path.join(__dirname, 'frontend', 'src', 'main.js')
   ],
   output: {
@@ -20,8 +16,7 @@ module.exports = {
     publicPath: '/assets/'
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.optimize.UglifyJsPlugin()
+    new ExtractTextPlugin('styles.css')
   ],
   module: {
     loaders: [
@@ -32,7 +27,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loaders: ['style', 'css', 'postcss-loader'],
+        loader: ExtractTextPlugin.extract('style-loader', 'css-loader!postcss-loader'),
         include: path.join(__dirname, 'frontend', 'src')
       }
     ]
