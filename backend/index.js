@@ -14,7 +14,7 @@ const db = require('./config/database')
 
 function internalErrors (err, req, res, next) {
   console.error(err.stack)
-  res.status(500).send({ error: 'Internal Server Error' })
+  res.status(500).send({ error: true, message: 'Internal Server Error' })
 }
 
 db.createTables()
