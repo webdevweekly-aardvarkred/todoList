@@ -1,4 +1,4 @@
-{
+
   "name": "todoList",
   "version": "1.0.0",
   "description": "r/webdev project week 1 : todo list",
@@ -8,7 +8,7 @@
     "test": "npm run lint",
     "dev": "node devserver.js & nodemon ./backend/index.js",
     "build": "webpack",
-    "start": "npm run build && node ./backend/index.js"
+    "start": "node ./backend/index.js"
   },
   "repository": {
     "type": "git",
