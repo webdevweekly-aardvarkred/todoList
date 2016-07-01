@@ -24,6 +24,7 @@ ul {
 .container {
   width: 100%;
   max-width: 960px;
+  min-width: 200px;
   margin: 0 auto;
 }
 

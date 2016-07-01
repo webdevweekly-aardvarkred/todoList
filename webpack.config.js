@@ -33,7 +33,7 @@ module.exports = {
     ]
   },
   postcss: function () {
-    return [precss, autoprefixer]
+    return [precss, autoprefixer({ browsers: ['> 5%', 'last 3 iOS versions', 'Firefox > 20', 'ie 6-10'] })]
   },
   node: {
     net: 'empty',
