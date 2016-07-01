@@ -103,23 +103,37 @@ ul {
   border-bottom: 1px solid #fae596;
 }
 
-.todo-form input[type="text"], .todos input[type="text"] {
+.todo-form input[type="text"] {
+  -webkit-appearance: none;
+  appearance: none;
   font-size: 2em;
-  background: #dddfd4;
+  background: #173e43;
   padding: 0.5em;
-  border: 1px solid #3fb0ac;
+  border: 1px dashed #fae596;
   border-radius: 2px;
   box-sizing: inherit;
+  color: inherit;
   font-family: inherit;
+  transition: all 0.3s ease-in;
+}
+
+.todo-form input[type="text"]:focus, .todo-form input[type="text"]:hover {
+  outline: none;
+  padding: 0.75em;
 }
 
 .todo-form input[type="text"] {
   width: 100%;
 }
 
+.todos {
+  border-left: 1px dashed #fae596;
+  border-right: 1px dashed #fae596;
+}
+
 .todos li {
   position: relative;
-  margin-bottom: 1em;
+  margin-bottom: 2em;
   border-bottom: 1px dashed #fae596;
 }
 
