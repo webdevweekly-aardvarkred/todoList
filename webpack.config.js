@@ -1,30 +1,44 @@
-var path = require('path')
-var webpack = require('webpack')
+const path = require('path')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const precss = require('precss')
+const autoprefixer = require('autoprefixer')
 
 const host = process.env.HOST || 'localhost'
 const port = process.env.PORT || 3000
 
 module.exports = {
-  devtool: 'eval',
   entry: [
-    `webpack-dev-server/client?http://${host}:${port}`,
-    'webpack/hot/only-dev-server',
     path.join(__dirname, 'frontend', 'src', 'main.js')
   ],
   output: {
-    path: path.join(__dirname, 'dist', 'js'),
+    path: path.join(__dirname, 'dist'),
     filename: 'bundle.js',
-    publicPath: '/assets/js/'
+    publicPath: '/assets/'
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin()
+    new ExtractTextPlugin('styles.css')
   ],
   module: {
-    loaders: [{
-      test: /\.js$/,
-      loaders: ['react-hot', 'babel'],
-      include: path.join(__dirname, 'frontend', 'src')
-    }]
+    loaders: [
+      {
+        test: /\.js$/,
+        loaders: ['react-hot', 'babel'],
+        include: path.join(__dirname, 'frontend', 'src')
+      },
+      {
+        test: /\.css$/,
+        loader: ExtractTextPlugin.extract('style-loader', 'css-loader!postcss-loader'),
+        include: path.join(__dirname, 'frontend', 'src')
+      }
+    ]
+  },
+  postcss: function () {
+    return [precss, autoprefixer]
+  },
+  node: {
+    net: 'empty',
+    tls: 'empty',
+    dns: 'empty'
   },
   port: port,
   host: host
