@@ -10,7 +10,6 @@ const userRoutes = require('./routes/user')
 const passport = require('passport')
 const passportStrategy = require('./config/passport')
 const db = require('./config/database')
-const ENV = process.env.ENV || 'dev'
 
 /* importing database to createTable if it doesn't exist
  * start our application after database tables have been created */
@@ -25,9 +24,7 @@ db.createTables()
     console.log('tables have been created')
 
     app.use(compression())
-    if (ENV === 'prod') {
-      app.use('/assets', express.static(path.join(__dirname, '..', 'dist')))
-    }
+    app.use('/assets', express.static(path.join(__dirname, '..', 'dist')))
     app.use(bodyParser.urlencoded({extended: true}))
     app.use(bodyParser.json())
     app.use(methodOverride('_method'))
