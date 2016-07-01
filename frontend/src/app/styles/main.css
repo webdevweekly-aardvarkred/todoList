@@ -104,7 +104,6 @@ ul {
 }
 
 .todo-form input[type="text"] {
-  -webkit-appearance: none;
   appearance: none;
   font-size: 2em;
   background: #173e43;
@@ -159,7 +158,6 @@ ul {
 }
 
 .toggle-complete {
-  -webkit-appearance: none;
   appearance: none;
   height: 2em;
   width: 2em;
@@ -167,7 +165,7 @@ ul {
   margin: 0;
   border-radius: 3px;
   cursor: pointer;
-  transition: all 0.3s ease-in;
+  transition: all 0.5s ease-in;
 }
 
 .toggle-complete:after {
@@ -230,7 +228,6 @@ ul {
 }
 
 .importance-input input[type="radio"] {
-  -webkit-appearance: none;
   appearance: none;
   width: 14px;
   height: 14px;

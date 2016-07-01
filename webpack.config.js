@@ -1,6 +1,8 @@
 const path = require('path')
 const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const precss = require('precss')
+const autoprefixer = require('autoprefixer')
 
 const host = process.env.HOST || 'localhost'
 const port = process.env.PORT || 3000
@@ -30,10 +32,13 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loaders: ['style', 'css'],
+        loaders: ['style', 'css', 'postcss-loader'],
         include: path.join(__dirname, 'frontend', 'src')
       }
     ]
+  },
+  postcss: function () {
+    return [precss, autoprefixer]
   },
   node: {
     net: 'empty',

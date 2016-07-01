@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react'
+import React, { Component, PropTypes } from 'react'
 import { withRouter } from 'react-router'
 import Importance from './Importance'
 
@@ -9,64 +9,69 @@ function unauth (err, replace) {
   }
 }
 
-const Todo = (
-  {
-    task,
-    importance,
-    completed,
-    id,
-    deleteTodo,
-    toggleTodo,
-    selectImportance,
-    router,
-    editTask
+class Todo extends Component {
+  constructor (props) {
+    super(props)
+
+    this.props = props
+    this.handleChange = this.handleChange.bind(this)
   }
-) => {
-  return (
-    <li className='todo-item-container' data-id={id} data-importance={importance}>
-      <div className='todo-item'>
-        <input
-          className='center toggle-complete'
-          onChange={(e) => {
-            toggleTodo(id, { completed: !completed })
+
+  handleChange (id, value) {
+    const { selectImportance } = this.props
+
+    selectImportance(id, value)
+  }
+
+  render () {
+    const { id, importance, completed, unauth, router, deleteTodo, editTask, task, toggleTodo } = this.props
+    return (
+      <li className='todo-item-container' data-id={id} data-importance={importance}>
+        <div className='todo-item'>
+          <input
+            className='center toggle-complete'
+            onChange={(e) => {
+              toggleTodo(id, { completed: !completed })
+                .catch((err) => {
+                  unauth(err, router.replace)
+                })
+            }}
+            type='checkbox'
+            checked={completed}
+            value='completed' />
+
+          <span>{task}</span>
+          <button className='center' onClick={(e) => {
+            deleteTodo(id)
               .catch((err) => {
                 unauth(err, router.replace)
               })
-          }}
-          type='checkbox'
-          checked={completed}
-          value='completed' />
-
-        <span>{task}</span>
-        <button className='center' onClick={(e) => {
-          deleteTodo(id)
-            .catch((err) => {
-              unauth(err, router.replace)
-            })
-        }}>X</button>
-      </div>
-      <div className='todo-edit'>
-        <input type='text' defaultValue={task} onKeyUp={(e) => {
-          const key = e.which
-          if (key === 13) {
-            editTask(id, {
-              task: e.target.value
-            })
-          }
-        }} />
-      </div>
-      <div className='importance-input'>
-        {['low', 'moderately', 'highly'].map((value, i) => (
-          <Importance
-            unauth={unauth}
-            importance={importance}
-            value={value}
-            key={i} id={id}
-            selectImportance={selectImportance} />
-          ))}
-      </div>
-    </li>
-  )
+          }}>X</button>
+        </div>
+        <div className='todo-edit'>
+          <input type='text' defaultValue={task} onKeyUp={(e) => {
+            const key = e.which
+            if (key === 13) {
+              editTask(id, {
+                task: e.target.value
+              })
+            }
+          }} />
+        </div>
+        <div className='importance-input'>
+      {['low', 'moderately', 'highly'].map((value, i) => (
+        <Importance
+          unauth={unauth}
+          importance={importance}
+          selected={this.props.importance === value}
+          value={value}
+          key={i} id={id}
+          onChange={this.handleChange} />
+        ))}
+        </div>
+      </li>
+    )
+  }
 }
 
 Todo.propTypes = {
