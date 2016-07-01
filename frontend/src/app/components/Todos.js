@@ -12,7 +12,8 @@ const Todos = (
     todos,
     ATTEMPT_DELETE: deleteTodo,
     ATTEMPT_TOGGLE: toggleTodo,
-    ATTEMPT_SELECT_IMPORTANCE: selectImportance
+    ATTEMPT_SELECT_IMPORTANCE: selectImportance,
+    ATTEMPT_EDIT_TASK: editTask
   }
 ) => {
   return (
@@ -33,6 +34,7 @@ const Todos = (
             deleteTodo={deleteTodo}
             toggleTodo={toggleTodo}
             selectImportance={selectImportance}
+            editTask={editTask}
           />
           )
       })}
@@ -51,7 +53,8 @@ Todos.propTypes = {
   )),
   ATTEMPT_DELETE: PropTypes.func,
   ATTEMPT_TOGGLE: PropTypes.func,
-  ATTEMPT_SELECT_IMPORTANCE: PropTypes.func
+  ATTEMPT_SELECT_IMPORTANCE: PropTypes.func,
+  ATTEMPT_EDIT_TASK: PropTypes.func
 }
 
 export default Todos

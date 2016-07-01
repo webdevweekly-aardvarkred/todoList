@@ -1,5 +1,8 @@
-var path = require('path')
-var webpack = require('webpack')
+const path = require('path')
+const webpack = require('webpack')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const precss = require('precss')
+const autoprefixer = require('autoprefixer')
 
 const host = process.env.HOST || 'localhost'
 const port = process.env.PORT || 3000
@@ -12,20 +15,30 @@ module.exports = {
     path.join(__dirname, 'frontend', 'src', 'main.js')
   ],
   output: {
-    path: path.join(__dirname, 'dist', 'js'),
+    path: path.join(__dirname, 'dist'),
     filename: 'bundle.js',
-    publicPath: '/assets/js/'
+    publicPath: '/assets/'
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new webpack.optimize.UglifyJsPlugin()
   ],
   module: {
-    loaders: [{
-      test: /\.js$/,
-      loaders: ['react-hot', 'babel'],
-      include: path.join(__dirname, 'frontend', 'src')
-    }]
+    loaders: [
+      {
+        test: /\.js$/,
+        loaders: ['react-hot', 'babel'],
+        include: path.join(__dirname, 'frontend', 'src')
+      },
+      {
+        test: /\.css$/,
+        loaders: ['style', 'css', 'postcss-loader'],
+        include: path.join(__dirname, 'frontend', 'src')
+      }
+    ]
+  },
+  postcss: function () {
+    return [precss, autoprefixer]
   },
   node: {
     net: 'empty',

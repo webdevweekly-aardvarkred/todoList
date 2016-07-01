@@ -1,24 +1,13 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router'
+import styles from '../styles/main.css'
 
 /* this is our root component */
 
 class App extends Component {
   render () {
     return (
-      <div className='app-container'>
-        <header>
-          <nav>
-            <ul>
-              <li>
-                <Link to='/'>home</Link>
-              </li>
-              <li>
-                <Link to='/login'>login</Link>
-              </li>
-            </ul>
-          </nav>
-        </header>
+      <div className='container'>
         {this.props.children}
       </div>
     )

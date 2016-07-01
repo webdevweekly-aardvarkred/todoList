@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import Todos from '../containers/TodosContainer'
 import TodoInputContainer from '../containers/TodoInputContainer'
+import Loader from './Loader'
 
 class Home extends Component {
   constructor (props) {
@@ -33,7 +34,7 @@ class Home extends Component {
 
     return (
       <div class='container'>
-        <div className='loader' style={loader}>...loading</div>
+        <Loader loading={loader} />
         <div className='todos-container' style={app}>
           <TodoInputContainer />
           <Todos />
