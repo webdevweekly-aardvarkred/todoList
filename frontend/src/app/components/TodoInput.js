@@ -34,8 +34,7 @@ class TodoInput extends Component {
     return (
       <section className='todo-form'>
         <form onSubmit={this.onSubmit.bind(this)}>
-          <input type='text' ref='todoInput' />
-          <button type='input'>Add Todo</button>
+          <input placeholder='Things to do..' type='text' ref='todoInput' />
         </form>
       </section>
     )

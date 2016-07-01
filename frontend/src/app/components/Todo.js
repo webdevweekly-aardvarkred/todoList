@@ -26,6 +26,7 @@ const Todo = (
     <li className='todo-item-container' data-id={id} data-importance={importance}>
       <div className='todo-item'>
         <input
+          className='center toggle-complete'
           onChange={(e) => {
             toggleTodo(id, { completed: !completed })
               .catch((err) => {
@@ -35,13 +36,14 @@ const Todo = (
           type='checkbox'
           checked={completed}
           value='completed' />
-        {task}
-        <button onClick={(e) => {
+
+        <span>{task}</span>
+        <button className='center' onClick={(e) => {
           deleteTodo(id)
             .catch((err) => {
               unauth(err, router.replace)
             })
-        }}>delete</button>
+        }}>X</button>
       </div>
       <div className='todo-edit'>
         <input type='text' defaultValue={task} onKeyUp={(e) => {

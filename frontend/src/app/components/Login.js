@@ -22,6 +22,7 @@ class Login extends Component {
     this.errorMessages = this.errorMessages.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
     this.onRegister = this.onRegister.bind(this)
+    this.clearErrors = this.clearErrors.bind(this)
   }
 
   validatorData () {
@@ -31,61 +32,75 @@ class Login extends Component {
     }
   }
 
+  clearErrors () {
+    this.setState({
+      networkErrors: []
+    })
+
+    return this
+  }
+
   onSubmit (e) {
     e.preventDefault()
 
-    this.props.validate((error) => {
-      if (!error) {
-        Auth.login(this.validatorData())
-          .then(() => {
-            this.props.router.replace('/')
-          })
-          .catch((error) => {
-            this.setState({
-              networkErrors: [error.data.message]
+    this.clearErrors()
+      .props.validate((error) => {
+        if (!error) {
+          Auth.login(this.validatorData())
+            .then(() => {
+              this.props.router.replace('/')
             })
-          })
-      }
-    })
+            .catch((error) => {
+              this.setState({
+                networkErrors: [error.data.message]
+              })
+            })
+        }
+      })
   }
 
   onRegister (e) {
-    this.props.validate((error) => {
-      if (!error) {
-        Auth.register(this.validatorData())
-          .then(() => {
-            this.props.router.replace('/')
-          })
-          .catch((error) => {
-            this.setState({
-              networkErrors: [error.data.message]
+    this.clearErrors()
+      .props.validate((error) => {
+        if (!error) {
+          Auth.register(this.validatorData())
+            .then(() => {
+              this.props.router.replace('/')
             })
-          })
-      }
-    })
+            .catch((error) => {
+              this.setState({
+                networkErrors: [error.data.message]
+              })
+            })
+        }
+      })
   }
 
   errorMessages (field, error) {
-    return this.props.getValidationMessages(field)
-      .map((error, i) => {
-        return <li key={i}><span>{error}</span></li>
-      })
+    return (
+      <ul className='errors'>{this.props.getValidationMessages(field)
+        .map((error, i) => {
+          return <li key={i}><span>{error}</span></li>
+        })}
+      </ul>
+    )
   }
 
   render () {
     return (
       <section className='login'>
         <form onSubmit={this.onSubmit}>
-          <input ref='username' placeholder='username' id='username' />
+          <input type='text' ref='username' placeholder='Username' id='username' />
           {this.errorMessages('username')}
-          <input ref='password' placeholder='password' id='password' type='password' />
+          <input ref='password' placeholder='Password' id='password' type='password' />
           {this.errorMessages('password')}
           <button type='submit'>login</button>
           <button type='button' onClick={this.onRegister}>register</button>
+          <ul className='errors'>{this.state.networkErrors.map((error, i) => {
+            return <li key={i}><span>{error}</span></li>
+          })}
+          </ul>
         </form>
-        {this.state.networkErrors.map((error, i) => {
-          return <li key={i}><span>{error}</span></li>
-        })}
       </section>
     )
   }
