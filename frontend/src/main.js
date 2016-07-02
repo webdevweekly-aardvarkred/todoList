@@ -51,6 +51,10 @@ function isLoggedIn (next, replace, cb) {
     })
 }
 
+function redirectHome (next, replace) {
+  replace('/')
+}
+
 const store = createStore(rootReducer, applyMiddleware(thunk))
 
 const Root = (
@@ -59,6 +63,7 @@ const Root = (
       <Route path='/' component={App}>
         <IndexRoute component={Home} onEnter={validate} />
         <Route path='login' component={Login} onEnter={isLoggedIn} />
+        <Route path='*' onEnter={redirectHome} />
       </Route>
     </Router>
   </Provider>

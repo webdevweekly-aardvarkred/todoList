@@ -128,6 +128,10 @@
 	  });
 	}
 
+	function redirectHome(next, replace) {
+	  replace('/');
+	}
+
 	var store = (0, _redux.createStore)(_store2.default, (0, _redux.applyMiddleware)(_reduxThunk2.default));
 
 	var Root = _react2.default.createElement(
@@ -140,7 +144,8 @@
 	      _reactRouter.Route,
 	      { path: '/', component: _App2.default },
 	      _react2.default.createElement(_reactRouter.IndexRoute, { component: _HomeContainer2.default, onEnter: validate }),
-	      _react2.default.createElement(_reactRouter.Route, { path: 'login', component: _Login2.default, onEnter: isLoggedIn })
+	      _react2.default.createElement(_reactRouter.Route, { path: 'login', component: _Login2.default, onEnter: isLoggedIn }),
+	      _react2.default.createElement(_reactRouter.Route, { path: '*', onEnter: redirectHome })
 	    )
 	  )
 	);
