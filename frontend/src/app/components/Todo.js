@@ -42,7 +42,7 @@ class Todo extends Component {
   onEdit (e) {
     const { editTask } = this.props
     const key = e.which
-    const input = this.refs.edit
+    const input = e.target
     const todo = xss(input.value.trim())
 
     if (key === 13) {
@@ -50,11 +50,15 @@ class Todo extends Component {
         editTask(this.props.id, {
           task: todo
         })
+        .then(() => {
+          input.value = ''
+        })
         .catch(this.unauth)
       }
 
       this.setState({
-        editing: false
+        editing: false,
+        task: todo
       })
     }
   }

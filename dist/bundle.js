@@ -29582,18 +29582,21 @@
 	      var editTask = this.props.editTask;
 
 	      var key = e.which;
-	      var input = this.refs.edit;
+	      var input = e.target;
 	      var todo = (0, _xss2.default)(input.value.trim());
 
 	      if (key === 13) {
 	        if (todo) {
 	          editTask(this.props.id, {
 	            task: todo
+	          }).then(function () {
+	            input.value = '';
 	          }).catch(this.unauth);
 	        }
 
 	        this.setState({
-	          editing: false
+	          editing: false,
+	          task: todo
 	        });
 	      }
 	    }
