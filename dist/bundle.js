@@ -29305,7 +29305,7 @@
 
 	var _TodosContainer2 = _interopRequireDefault(_TodosContainer);
 
-	var _TodoInputContainer = __webpack_require__(290);
+	var _TodoInputContainer = __webpack_require__(300);
 
 	var _TodoInputContainer2 = _interopRequireDefault(_TodoInputContainer);
 
@@ -29521,6 +29521,10 @@
 
 	var _Importance2 = _interopRequireDefault(_Importance);
 
+	var _xss = __webpack_require__(290);
+
+	var _xss2 = _interopRequireDefault(_xss);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -29544,32 +29548,84 @@
 
 	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Todo).call(this, props));
 
+	    _this.state = {
+	      editing: false
+	    };
 	    _this.props = props;
 	    _this.handleChange = _this.handleChange.bind(_this);
+	    _this.onEdit = _this.onEdit.bind(_this);
+	    _this.unauth = _this.unauth.bind(_this);
+	    _this.double = _this.double.bind(_this);
+	    _this.onBlur = _this.onBlur.bind(_this);
 	    return _this;
 	  }
 
 	  _createClass(Todo, [{
+	    key: 'unauth',
+	    value: function unauth(err) {
+	      var status = err.status;
+	      if (status >= 400 && status <= 500) {
+	        this.props.router.replace('/login');
+	      }
+	    }
+	  }, {
 	    key: 'handleChange',
 	    value: function handleChange(id, value) {
 	      var selectImportance = this.props.selectImportance;
 
 
-	      selectImportance(id, value);
+	      selectImportance(id, value).catch(this.unauth);
+	    }
+	  }, {
+	    key: 'onEdit',
+	    value: function onEdit(e) {
+	      var editTask = this.props.editTask;
+
+	      var key = e.which;
+	      var input = this.refs.edit;
+	      var todo = (0, _xss2.default)(input.value.trim());
+
+	      if (key === 13) {
+	        if (todo) {
+	          editTask(this.props.id, {
+	            task: e.target.value
+	          }).catch(this.unauth);
+	        }
+
+	        this.setState({
+	          editing: false
+	        });
+	      }
+	    }
+	  }, {
+	    key: 'onBlur',
+	    value: function onBlur(e) {
+	      this.setState({
+	        editing: false
+	      });
+	    }
+	  }, {
+	    key: 'double',
+	    value: function double(e) {
+	      var _this2 = this;
+
+	      this.setState({
+	        editing: true
+	      });
+	      setTimeout(function () {
+	        _this2.refs.edit.focus();
+	      }, 100);
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this2 = this;
+	      var _this3 = this;
 
 	      var _props = this.props;
 	      var id = _props.id;
 	      var importance = _props.importance;
 	      var completed = _props.completed;
-	      var unauth = _props.unauth;
-	      var router = _props.router;
 	      var deleteTodo = _props.deleteTodo;
-	      var editTask = _props.editTask;
 	      var task = _props.task;
 	      var toggleTodo = _props.toggleTodo;
 
@@ -29582,39 +29638,43 @@
 	          _react2.default.createElement('input', {
 	            className: 'center toggle-complete',
 	            onChange: function onChange(e) {
-	              toggleTodo(id, { completed: !completed }).catch(function (err) {
-	                unauth(err, router.replace);
-	              });
+	              toggleTodo(id, { completed: !completed }).catch(_this3.unauth);
 	            },
 	            type: 'checkbox',
 	            checked: completed,
-	            value: 'completed' }),
+	            value: 'completed'
+	          }),
 	          _react2.default.createElement(
 	            'span',
-	            null,
+	            {
+	              style: {
+	                display: this.state.editing ? 'none' : 'inline'
+	              },
+	              onDoubleClick: this.double },
 	            task
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            {
+	              style: {
+	                display: this.state.editing ? 'inline' : 'none'
+	              },
+	              className: 'todo-edit' },
+	            _react2.default.createElement('input', {
+	              type: 'text',
+	              ref: 'edit',
+	              defaultValue: task,
+	              onKeyUp: this.onEdit,
+	              onBlur: this.onBlur
+	            })
 	          ),
 	          _react2.default.createElement(
 	            'button',
 	            { className: 'center', onClick: function onClick(e) {
-	                deleteTodo(id).catch(function (err) {
-	                  unauth(err, router.replace);
-	                });
+	                deleteTodo(id).catch(_this3.unauth);
 	              } },
 	            'X'
 	          )
-	        ),
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'todo-edit' },
-	          _react2.default.createElement('input', { type: 'text', defaultValue: task, onKeyUp: function onKeyUp(e) {
-	              var key = e.which;
-	              if (key === 13) {
-	                editTask(id, {
-	                  task: e.target.value
-	                });
-	              }
-	            } })
 	        ),
 	        _react2.default.createElement(
 	          'div',
@@ -29623,10 +29683,10 @@
 	            return _react2.default.createElement(_Importance2.default, {
 	              unauth: unauth,
 	              importance: importance,
-	              selected: _this2.props.importance === value,
+	              selected: _this3.props.importance === value,
 	              value: value,
 	              key: i, id: id,
-	              onChange: _this2.handleChange });
+	              onChange: _this3.handleChange });
 	          })
 	        )
 	      );
@@ -29759,136 +29819,15 @@
 /* 290 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* REACT HOT LOADER */ if (false) { (function () { var ReactHotAPI = require("/home/vagrant/todoList/node_modules/react-hot-loader/node_modules/react-hot-api/modules/index.js"), RootInstanceProvider = require("/home/vagrant/todoList/node_modules/react-hot-loader/RootInstanceProvider.js"), ReactMount = require("react/lib/ReactMount"), React = require("react"); module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () { return RootInstanceProvider.getRootInstances(ReactMount); }, React); })(); } try { (function () {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _reactRedux = __webpack_require__(182);
-
-	var _actions = __webpack_require__(284);
-
-	var _TodoInput = __webpack_require__(291);
-
-	var _TodoInput2 = _interopRequireDefault(_TodoInput);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	exports.default = (0, _reactRedux.connect)(null, { ATTEMPT_ADD: _actions.ATTEMPT_ADD })(_TodoInput2.default);
-
-	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/home/vagrant/todoList/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "TodoInputContainer.js" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
-
-/***/ },
-/* 291 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* REACT HOT LOADER */ if (false) { (function () { var ReactHotAPI = require("/home/vagrant/todoList/node_modules/react-hot-loader/node_modules/react-hot-api/modules/index.js"), RootInstanceProvider = require("/home/vagrant/todoList/node_modules/react-hot-loader/RootInstanceProvider.js"), ReactMount = require("react/lib/ReactMount"), React = require("react"); module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () { return RootInstanceProvider.getRootInstances(ReactMount); }, React); })(); } try { (function () {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _reactRouter = __webpack_require__(195);
-
-	var _xss = __webpack_require__(292);
-
-	var _xss2 = _interopRequireDefault(_xss);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var TodoInput = function (_Component) {
-	  _inherits(TodoInput, _Component);
-
-	  function TodoInput() {
-	    _classCallCheck(this, TodoInput);
-
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(TodoInput).apply(this, arguments));
-	  }
-
-	  _createClass(TodoInput, [{
-	    key: 'componentWillReceiveProps',
-	    value: function componentWillReceiveProps(next) {
-	      console.log(next);
-	    }
-	  }, {
-	    key: 'onSubmit',
-	    value: function onSubmit(e) {
-	      var _this2 = this;
-
-	      e.preventDefault();
-
-	      var addTodo = this.props.ATTEMPT_ADD;
-
-	      var input = this.refs.todoInput;
-	      var todo = (0, _xss2.default)(input.value.trim());
-
-	      if (todo) {
-	        addTodo({
-	          task: todo,
-	          importance: 'low',
-	          completed: false
-	        }).then(function () {
-	          input.value = '';
-	        }).catch(function (err) {
-	          var status = err.status;
-	          if (status >= 400 && status <= 500) {
-	            _this2.props.router.replace('/login');
-	          }
-	        });
-	      }
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'section',
-	        { className: 'todo-form' },
-	        _react2.default.createElement(
-	          'form',
-	          { onSubmit: this.onSubmit.bind(this) },
-	          _react2.default.createElement('input', { placeholder: 'Things to do..', type: 'text', ref: 'todoInput' })
-	        )
-	      );
-	    }
-	  }]);
-
-	  return TodoInput;
-	}(_react.Component);
-
-	exports.default = (0, _reactRouter.withRouter)(TodoInput);
-
-	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/home/vagrant/todoList/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "TodoInput.js" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
-
-/***/ },
-/* 292 */
-/***/ function(module, exports, __webpack_require__) {
-
 	/**
 	 * 模块入口
 	 *
 	 * @author 老雷<leizongmin@gmail.com>
 	 */
 
-	var DEFAULT = __webpack_require__(293);
-	var parser = __webpack_require__(300);
-	var FilterXSS = __webpack_require__(301);
+	var DEFAULT = __webpack_require__(291);
+	var parser = __webpack_require__(298);
+	var FilterXSS = __webpack_require__(299);
 
 
 	/**
@@ -29918,7 +29857,7 @@
 
 
 /***/ },
-/* 293 */
+/* 291 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -29927,8 +29866,8 @@
 	 * @author 老雷<leizongmin@gmail.com>
 	 */
 
-	var FilterCSS = __webpack_require__(294).FilterCSS;
-	var _ = __webpack_require__(299);
+	var FilterCSS = __webpack_require__(292).FilterCSS;
+	var _ = __webpack_require__(297);
 
 	// 默认白名单
 	function getDefaultWhiteList () {
@@ -30334,7 +30273,7 @@
 
 
 /***/ },
-/* 294 */
+/* 292 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -30343,8 +30282,8 @@
 	 * @author 老雷<leizongmin@gmail.com>
 	 */
 
-	var DEFAULT = __webpack_require__(295);
-	var FilterCSS = __webpack_require__(296);
+	var DEFAULT = __webpack_require__(293);
+	var FilterCSS = __webpack_require__(294);
 
 
 	/**
@@ -30372,7 +30311,7 @@
 
 
 /***/ },
-/* 295 */
+/* 293 */
 /***/ function(module, exports) {
 
 	/**
@@ -30761,7 +30700,7 @@
 
 
 /***/ },
-/* 296 */
+/* 294 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -30770,9 +30709,9 @@
 	 * @author 老雷<leizongmin@gmail.com>
 	 */
 
-	var DEFAULT = __webpack_require__(295);
-	var parseStyle = __webpack_require__(297);
-	var _ = __webpack_require__(298);
+	var DEFAULT = __webpack_require__(293);
+	var parseStyle = __webpack_require__(295);
+	var _ = __webpack_require__(296);
 
 
 	/**
@@ -30857,7 +30796,7 @@
 
 
 /***/ },
-/* 297 */
+/* 295 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -30866,7 +30805,7 @@
 	 * @author 老雷<leizongmin@gmail.com>
 	 */
 
-	var _ = __webpack_require__(298);
+	var _ = __webpack_require__(296);
 
 
 	/**
@@ -30937,7 +30876,7 @@
 
 
 /***/ },
-/* 298 */
+/* 296 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -30978,7 +30917,7 @@
 
 
 /***/ },
-/* 299 */
+/* 297 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -31013,7 +30952,7 @@
 
 
 /***/ },
-/* 300 */
+/* 298 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -31022,7 +30961,7 @@
 	 * @author 老雷<leizongmin@gmail.com>
 	 */
 
-	var _ = __webpack_require__(299);
+	var _ = __webpack_require__(297);
 
 	/**
 	 * 获取标签的名称
@@ -31256,7 +31195,7 @@
 
 
 /***/ },
-/* 301 */
+/* 299 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -31265,12 +31204,12 @@
 	 * @author 老雷<leizongmin@gmail.com>
 	 */
 
-	var FilterCSS = __webpack_require__(294).FilterCSS;
-	var DEFAULT = __webpack_require__(293);
-	var parser = __webpack_require__(300);
+	var FilterCSS = __webpack_require__(292).FilterCSS;
+	var DEFAULT = __webpack_require__(291);
+	var parser = __webpack_require__(298);
 	var parseTag = parser.parseTag;
 	var parseAttr = parser.parseAttr;
-	var _ = __webpack_require__(299);
+	var _ = __webpack_require__(297);
 
 
 	/**
@@ -31455,6 +31394,127 @@
 
 
 /***/ },
+/* 300 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* REACT HOT LOADER */ if (false) { (function () { var ReactHotAPI = require("/home/vagrant/todoList/node_modules/react-hot-loader/node_modules/react-hot-api/modules/index.js"), RootInstanceProvider = require("/home/vagrant/todoList/node_modules/react-hot-loader/RootInstanceProvider.js"), ReactMount = require("react/lib/ReactMount"), React = require("react"); module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () { return RootInstanceProvider.getRootInstances(ReactMount); }, React); })(); } try { (function () {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _reactRedux = __webpack_require__(182);
+
+	var _actions = __webpack_require__(284);
+
+	var _TodoInput = __webpack_require__(301);
+
+	var _TodoInput2 = _interopRequireDefault(_TodoInput);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = (0, _reactRedux.connect)(null, { ATTEMPT_ADD: _actions.ATTEMPT_ADD })(_TodoInput2.default);
+
+	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/home/vagrant/todoList/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "TodoInputContainer.js" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
+
+/***/ },
+/* 301 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* REACT HOT LOADER */ if (false) { (function () { var ReactHotAPI = require("/home/vagrant/todoList/node_modules/react-hot-loader/node_modules/react-hot-api/modules/index.js"), RootInstanceProvider = require("/home/vagrant/todoList/node_modules/react-hot-loader/RootInstanceProvider.js"), ReactMount = require("react/lib/ReactMount"), React = require("react"); module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () { return RootInstanceProvider.getRootInstances(ReactMount); }, React); })(); } try { (function () {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRouter = __webpack_require__(195);
+
+	var _xss = __webpack_require__(290);
+
+	var _xss2 = _interopRequireDefault(_xss);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var TodoInput = function (_Component) {
+	  _inherits(TodoInput, _Component);
+
+	  function TodoInput() {
+	    _classCallCheck(this, TodoInput);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(TodoInput).apply(this, arguments));
+	  }
+
+	  _createClass(TodoInput, [{
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(next) {
+	      console.log(next);
+	    }
+	  }, {
+	    key: 'onSubmit',
+	    value: function onSubmit(e) {
+	      var _this2 = this;
+
+	      e.preventDefault();
+
+	      var addTodo = this.props.ATTEMPT_ADD;
+
+	      var input = this.refs.todoInput;
+	      var todo = (0, _xss2.default)(input.value.trim());
+
+	      if (todo) {
+	        addTodo({
+	          task: todo,
+	          importance: 'low',
+	          completed: false
+	        }).then(function () {
+	          input.value = '';
+	        }).catch(function (err) {
+	          var status = err.status;
+	          if (status >= 400 && status <= 500) {
+	            _this2.props.router.replace('/login');
+	          }
+	        });
+	      }
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'section',
+	        { className: 'todo-form' },
+	        _react2.default.createElement(
+	          'form',
+	          { onSubmit: this.onSubmit.bind(this) },
+	          _react2.default.createElement('input', { placeholder: 'Things to do..', type: 'text', ref: 'todoInput' })
+	        )
+	      );
+	    }
+	  }]);
+
+	  return TodoInput;
+	}(_react.Component);
+
+	exports.default = (0, _reactRouter.withRouter)(TodoInput);
+
+	/* REACT HOT LOADER */ }).call(this); } finally { if (false) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = require("/home/vagrant/todoList/node_modules/react-hot-loader/makeExportsHot.js"); if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "TodoInput.js" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
+
+/***/ },
 /* 302 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -31526,7 +31586,7 @@
 
 	var _joi2 = _interopRequireDefault(_joi);
 
-	var _xss = __webpack_require__(292);
+	var _xss = __webpack_require__(290);
 
 	var _xss2 = _interopRequireDefault(_xss);
 

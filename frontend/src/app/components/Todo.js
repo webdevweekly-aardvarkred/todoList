@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { withRouter } from 'react-router'
 import Importance from './Importance'
+import xss from 'xss'
 
 function unauth (err, replace) {
   const status = err.status
@@ -13,18 +14,68 @@ class Todo extends Component {
   constructor (props) {
     super(props)
 
+    this.state = {
+      editing: false
+    }
     this.props = props
     this.handleChange = this.handleChange.bind(this)
+    this.onEdit = this.onEdit.bind(this)
+    this.unauth = this.unauth.bind(this)
+    this.double = this.double.bind(this)
+    this.onBlur = this.onBlur.bind(this)
+  }
+
+  unauth (err) {
+    const status = err.status
+    if (status >= 400 && status <= 500) {
+      this.props.router.replace('/login')
+    }
   }
 
   handleChange (id, value) {
     const { selectImportance } = this.props
 
     selectImportance(id, value)
+      .catch(this.unauth)
+  }
+
+  onEdit (e) {
+    const { editTask } = this.props
+    const key = e.which
+    const input = this.refs.edit
+    const todo = xss(input.value.trim())
+
+    if (key === 13) {
+      if (todo) {
+        editTask(this.props.id, {
+          task: e.target.value
+        })
+        .catch(this.unauth)
+      }
+
+      this.setState({
+        editing: false
+      })
+    }
+  }
+
+  onBlur (e) {
+    this.setState({
+      editing: false
+    })
+  }
+
+  double (e) {
+    this.setState({
+      editing: true
+    })
+    setTimeout(() => {
+      this.refs.edit.focus()
+    }, 100)
   }
 
   render () {
-    const { id, importance, completed, unauth, router, deleteTodo, editTask, task, toggleTodo } = this.props
+    const { id, importance, completed, deleteTodo, task, toggleTodo } = this.props
     return (
       <li className='todo-item-container' data-id={id} data-importance={importance}>
         <div className='todo-item'>
@@ -32,42 +83,46 @@ class Todo extends Component {
             className='center toggle-complete'
             onChange={(e) => {
               toggleTodo(id, { completed: !completed })
-                .catch((err) => {
-                  unauth(err, router.replace)
-                })
+                .catch(this.unauth)
             }}
             type='checkbox'
             checked={completed}
-            value='completed' />
-
-          <span>{task}</span>
+            value='completed'
+          />
+          <span
+            style={{
+              display: this.state.editing ? 'none' : 'inline'
+            }}
+            onDoubleClick={this.double}>{task}
+          </span>
+          <div
+            style={{
+              display: this.state.editing ? 'inline' : 'none'
+            }}
+            className='todo-edit'>
+            <input
+              type='text'
+              ref='edit'
+              defaultValue={task}
+              onKeyUp={this.onEdit}
+              onBlur={this.onBlur}
+            />
+          </div>
           <button className='center' onClick={(e) => {
             deleteTodo(id)
-              .catch((err) => {
-                unauth(err, router.replace)
-              })
+              .catch(this.unauth)
           }}>X</button>
         </div>
-        <div className='todo-edit'>
-          <input type='text' defaultValue={task} onKeyUp={(e) => {
-            const key = e.which
-            if (key === 13) {
-              editTask(id, {
-                task: e.target.value
-              })
-            }
-          }} />
-        </div>
         <div className='importance-input'>
-      {['low', 'moderately', 'highly'].map((value, i) => (
-        <Importance
-          unauth={unauth}
-          importance={importance}
-          selected={this.props.importance === value}
-          value={value}
-          key={i} id={id}
-          onChange={this.handleChange} />
-        ))}
+        {['low', 'moderately', 'highly'].map((value, i) => (
+          <Importance
+            unauth={unauth}
+            importance={importance}
+            selected={this.props.importance === value}
+            value={value}
+            key={i} id={id}
+            onChange={this.handleChange} />
+          ))}
         </div>
       </li>
     )

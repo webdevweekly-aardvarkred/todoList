@@ -133,20 +133,22 @@ ul {
 
 .todos li {
   position: relative;
-  margin-bottom: 2em;
+  margin-bottom: 1em;
   border-bottom: 1px dashed #fae596;
+  padding: 1em;
 }
 
 .todo-item {
   width: 100%;
   position: relative;
+  padding: 2em 0;
 }
 
 .todo-item span {
   box-sizing: border-box;
   margin-left: 2em;
   width: 80%;
-  display: block;
+  display: inline;
   word-break: break-all;
   padding: 1em;
   transition: all 0.3s ease-in;
@@ -156,6 +158,28 @@ ul {
   position: absolute;
   top: 50%;
   transform: translate3d(0, -50%,0);
+}
+
+.todo-edit {
+  margin-left: 3em;
+  width: calc(100% - 99px);
+  font-size: 1em;
+  display: none;
+}
+
+.todo-edit input {
+  appearance: none;
+  font-size: inherit;
+  padding: 1em 0;
+  padding-left: 0.5em;
+  width: inherit;
+  color: #dddfd4;
+  border: 1px dashed #fae596;
+  background: #173e43;
+}
+
+.todo-edit input:focus {
+  outline: none;
 }
 
 .toggle-complete {
@@ -312,6 +336,10 @@ ul {
 }
 
 @media all and (max-width: 480px) {
+  .todos li {
+    padding: 0;
+  }
+
   .todo-item button {
     opacity: 1;
   }
