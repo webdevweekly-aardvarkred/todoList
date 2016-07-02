@@ -29623,12 +29623,15 @@
 	    value: function double(e) {
 	      var _this2 = this;
 
-	      this.setState({
-	        editing: true
-	      });
-	      setTimeout(function () {
-	        _this2.refs.edit.focus();
-	      }, 100);
+	      var re = /^(INPUT|BUTTON)$/;
+	      if (!re.test(e.target.nodeName)) {
+	        this.setState({
+	          editing: true
+	        });
+	        setTimeout(function () {
+	          _this2.refs.edit.focus();
+	        }, 100);
+	      }
 	    }
 	  }, {
 	    key: 'render',

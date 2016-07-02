@@ -74,12 +74,15 @@ class Todo extends Component {
   }
 
   double (e) {
-    this.setState({
-      editing: true
-    })
-    setTimeout(() => {
-      this.refs.edit.focus()
-    }, 100)
+    const re = /^(INPUT|BUTTON)$/
+    if (!re.test(e.target.nodeName)) {
+      this.setState({
+        editing: true
+      })
+      setTimeout(() => {
+        this.refs.edit.focus()
+      }, 100)
+    }
   }
 
   render () {
