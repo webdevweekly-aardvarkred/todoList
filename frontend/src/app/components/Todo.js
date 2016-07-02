@@ -48,7 +48,7 @@ class Todo extends Component {
     if (key === 13) {
       if (todo) {
         editTask(this.props.id, {
-          task: e.target.value
+          task: todo
         })
         .catch(this.unauth)
       }
@@ -103,7 +103,6 @@ class Todo extends Component {
             <input
               type='text'
               ref='edit'
-              defaultValue={task}
               onKeyUp={this.onEdit}
               onBlur={this.onBlur}
             />

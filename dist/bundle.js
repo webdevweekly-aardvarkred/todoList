@@ -29588,7 +29588,7 @@
 	      if (key === 13) {
 	        if (todo) {
 	          editTask(this.props.id, {
-	            task: e.target.value
+	            task: todo
 	          }).catch(this.unauth);
 	        }
 
@@ -29663,7 +29663,6 @@
 	            _react2.default.createElement('input', {
 	              type: 'text',
 	              ref: 'edit',
-	              defaultValue: task,
 	              onKeyUp: this.onEdit,
 	              onBlur: this.onBlur
 	            })
