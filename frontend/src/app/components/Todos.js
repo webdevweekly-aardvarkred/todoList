@@ -29,7 +29,7 @@ const Todos = (
         return 1
       }).map((todo, i) => {
         return (
-          <Todo key={i}
+          <Todo key={`${i}-${todo.id}`}
             {...todo}
             deleteTodo={deleteTodo}
             toggleTodo={toggleTodo}

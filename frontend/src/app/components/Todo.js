@@ -15,7 +15,8 @@ class Todo extends Component {
     super(props)
 
     this.state = {
-      editing: false
+      editing: false,
+      task: props.task
     }
     this.props = props
     this.handleChange = this.handleChange.bind(this)
@@ -50,9 +51,6 @@ class Todo extends Component {
         editTask(this.props.id, {
           task: todo
         })
-        .then(() => {
-          input.value = ''
-        })
         .catch(this.unauth)
       }
 
@@ -61,6 +59,12 @@ class Todo extends Component {
         task: todo
       })
     }
+  }
+
+  edit (e) {
+    this.setState({
+      task: e.target.value
+    })
   }
 
   onBlur (e) {
@@ -82,7 +86,7 @@ class Todo extends Component {
     const { id, importance, completed, deleteTodo, task, toggleTodo } = this.props
     return (
       <li className='todo-item-container' data-id={id} data-importance={importance}>
-        <div className='todo-item'>
+        <div onDoubleClick={this.double} className='todo-item'>
           <input
             className='center toggle-complete'
             onChange={(e) => {
@@ -97,7 +101,8 @@ class Todo extends Component {
             style={{
               display: this.state.editing ? 'none' : 'inline'
             }}
-            onDoubleClick={this.double}>{task}
+          >
+          {task}
           </span>
           <div
             style={{
@@ -107,8 +112,10 @@ class Todo extends Component {
             <input
               type='text'
               ref='edit'
+              value={this.state.task}
               onKeyUp={this.onEdit}
               onBlur={this.onBlur}
+              onChange={this.edit.bind(this)}
             />
           </div>
           <button className='center' onClick={(e) => {

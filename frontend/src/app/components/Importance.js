@@ -7,21 +7,13 @@ class Importance extends Component {
     this.props = props
 
     this.state = {
-      checked: false
+      checked: this.props.selected
     }
   }
 
-  componentWillMount () {
-    this.setState({
-      checked: this.props.selected
-    })
-  }
-
   componentWillReceiveProps (nextProps) {
-    setTimeout(() => {
-      this.setState({
-        checked: nextProps.selected
-      })
+    this.setState({
+      checked: nextProps.selected
     })
   }
 

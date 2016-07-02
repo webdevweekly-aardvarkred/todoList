@@ -29469,7 +29469,7 @@
 
 	      return 1;
 	    }).map(function (todo, i) {
-	      return _react2.default.createElement(_Todo2.default, _extends({ key: i
+	      return _react2.default.createElement(_Todo2.default, _extends({ key: i + '-' + todo.id
 	      }, todo, {
 	        deleteTodo: deleteTodo,
 	        toggleTodo: toggleTodo,
@@ -29549,7 +29549,8 @@
 	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Todo).call(this, props));
 
 	    _this.state = {
-	      editing: false
+	      editing: false,
+	      task: props.task
 	    };
 	    _this.props = props;
 	    _this.handleChange = _this.handleChange.bind(_this);
@@ -29589,8 +29590,6 @@
 	        if (todo) {
 	          editTask(this.props.id, {
 	            task: todo
-	          }).then(function () {
-	            input.value = '';
 	          }).catch(this.unauth);
 	        }
 
@@ -29599,6 +29598,13 @@
 	          task: todo
 	        });
 	      }
+	    }
+	  }, {
+	    key: 'edit',
+	    value: function edit(e) {
+	      this.setState({
+	        task: e.target.value
+	      });
 	    }
 	  }, {
 	    key: 'onBlur',
@@ -29637,7 +29643,7 @@
 	        { className: 'todo-item-container', 'data-id': id, 'data-importance': importance },
 	        _react2.default.createElement(
 	          'div',
-	          { className: 'todo-item' },
+	          { onDoubleClick: this.double, className: 'todo-item' },
 	          _react2.default.createElement('input', {
 	            className: 'center toggle-complete',
 	            onChange: function onChange(e) {
@@ -29652,8 +29658,8 @@
 	            {
 	              style: {
 	                display: this.state.editing ? 'none' : 'inline'
-	              },
-	              onDoubleClick: this.double },
+	              }
+	            },
 	            task
 	          ),
 	          _react2.default.createElement(
@@ -29666,8 +29672,10 @@
 	            _react2.default.createElement('input', {
 	              type: 'text',
 	              ref: 'edit',
+	              value: this.state.task,
 	              onKeyUp: this.onEdit,
-	              onBlur: this.onBlur
+	              onBlur: this.onBlur,
+	              onChange: this.edit.bind(this)
 	            })
 	          ),
 	          _react2.default.createElement(
@@ -29753,27 +29761,16 @@
 	    _this.props = props;
 
 	    _this.state = {
-	      checked: false
+	      checked: _this.props.selected
 	    };
 	    return _this;
 	  }
 
 	  _createClass(Importance, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {
-	      this.setState({
-	        checked: this.props.selected
-	      });
-	    }
-	  }, {
 	    key: 'componentWillReceiveProps',
 	    value: function componentWillReceiveProps(nextProps) {
-	      var _this2 = this;
-
-	      setTimeout(function () {
-	        _this2.setState({
-	          checked: nextProps.selected
-	        });
+	      this.setState({
+	        checked: nextProps.selected
 	      });
 	    }
 	  }, {
